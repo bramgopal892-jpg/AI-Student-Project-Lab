@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Student Project Lab - Complete Demo</title>
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background-color:#f0f4f8; }
+header { background-color:#1e88e5; color:white; padding:20px; text-align:center; }
+nav a { color:white; margin:0 15px; text-decoration:none; font-weight:bold; }
+.hero { text-align:center; padding:50px 20px; }
+.hero input { width:60%; padding:10px; font-size:16px; }
+.hero button { padding:10px 20px; margin-left:10px; font-size:16px; cursor:pointer; background-color:#43a047; color:white; border:none; border-radius:5px; }
+.features { display:flex; flex-wrap:wrap; justify-content:center; padding:30px; }
+.feature-box { background-color:white; width:250px; margin:15px; padding:20px; border-radius:10px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+footer { background-color:#1e88e5; color:white; text-align:center; padding:15px; margin-top:30px; }
+#response, #projectSection { text-align:center; padding:30px; font-size:18px; }
+#simulationCanvas { border:1px solid #ccc; display:block; margin:30px auto; background:white; }
+button#downloadVideo { padding:10px 20px; margin-top:10px; font-size:16px; cursor:pointer; border:none; border-radius:5px; background-color:#ff9800; color:white; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>AI Student Project Lab - Complete Demo</h1>
+<nav>
+<a href="#">Home</a>
+<a href="#">AI Idea Lab</a>
+<a href="#">Project Generator</a>
+<a href="#">Study Help</a>
+<a href="#">Community</a>
+</nav>
+</header>
+
+<div class="hero">
+<h2>Apne Advanced Ideas Ko Reality Me Badlo</h2>
+<p>AI ke saath apne projects aur study ko aur easy banao</p>
+<input type="text" id="userInput" placeholder="Apna idea ya question likhe...">
+<button onclick="processIdea();">Process Idea</button>
+</div>
+
+<div class="features">
+<div class="feature-box">🌍 Multi-language Support</div>
+<div class="feature-box">🤖 AI Idea Explainer</div>
+<div class="feature-box">🛠️ Advanced Project Generator</div>
+<div class="feature-box">📚 Study Help Section</div>
+<div class="feature-box">👩‍🎓 Student Community</div>
+</div>
+
+<div id="response"></div>
+<div id="projectSection"></div>
+<canvas id="simulationCanvas" width="500" height="300"></canvas>
+<div style="text-align:center;"><button id="downloadVideo">Download Video (Demo)</button></div>
+
+<footer>
+© 2025 AI Student Project Lab | About | Contact | Privacy Policy
+</footer>
+
+<script>
+const canvas = document.getElementById('simulationCanvas');
+const ctx = canvas.getContext('2d');
+let animationInterval;
+
+function detectLanguage(text) {
+    const hindiPattern = /[\u0900-\u097F]/;
+    return hindiPattern.test(text) ? "Hindi" : "English";
+}
+
+function processIdea() {
+    const input = document.getElementById('userInput').value.trim();
+    if(input === "") { alert("Kripya apna idea ya question likhe."); return; }
+
+    const language = detectLanguage(input);
+    const responseDiv = document.getElementById('response');
+    let responseText = language === "Hindi" ?
+        `AI Response (Hindi): Aapka idea '${input}' par kaam shuru kiya ja raha hai. Arduino code aur virtual video next step me dikhaya jayega.` :
+        `AI Response (English): Your idea '${input}' is being processed. Arduino code and virtual video will be shown in the next step.`;
+    responseDiv.innerHTML = `<b>${responseText}</b>`;
+
+    showProject(input);
+    startSimulation(input);
+}
+
+function showProject(input) {
+    const projectDiv = document.getElementById('projectSection');
+    let code = `int led = 13;\nvoid setup() {\n  pinMode(led, OUTPUT);\n}\nvoid loop() {\n  digitalWrite(led, HIGH);\n  delay(1000);\n  digitalWrite(led, LOW);\n  delay(1000);\n}`;
+    let components = "Arduino UNO, LED, 220Ω Resistor, Breadboard, Jumper Wires";
+
+    if(input.toLowerCase().includes('motor')) {
+        code += `\nint motor = 9;\npinMode(motor, OUTPUT);\nvoid loop() { digitalWrite(motor, HIGH); delay(1000); digitalWrite(motor, LOW); }`;
+        components += ", Motor";
+    }
+    if(input.toLowerCase().includes('buzzer')) {
+        code += `\nint buzzer = 8;\npinMode(buzzer, OUTPUT);\nvoid loop() { digitalWrite(buzzer, HIGH); delay(500); digitalWrite(buzzer, LOW); }`;
+        components += ", Buzzer";
+    }
+
+    projectDiv.innerHTML = `<h3>Arduino Code & Components</h3><pre>${code}</pre><p><b>Components:</b> ${components}</p>`;
+}
+
+function startSimulation(input) {
+    clearInterval(animationInterval);
+    let ledState=false, motorState=false, buzzerState=false;
+    animationInterval = setInterval(() => {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.font = "14px Arial";
+
+        // LED
+        if(input.toLowerCase().includes('led')) {
+            ledState = !ledState;
+            ctx.fillStyle = ledState ? 'green' : 'red';
+            ctx.beginPath(); ctx.arc(100,100,20,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle='black'; ctx.fillText('LED', 90,140);
+        }
+
+        // Motor
+        if(input.toLowerCase().includes('motor')) {
+            motorState = !motorState;
+            ctx.save(); ctx.translate(250,100); ctx.rotate(motorState?0.3:-0.3);
+            ctx.fillStyle='orange'; ctx.fillRect(-20,-20,40,40); ctx.restore();
+            ctx.fillStyle='black'; ctx.fillText('Motor', 230,140);
+        }
+
+        // Buzzer
+        if(input.toLowerCase().includes('buzzer')) {
+            buzzerState = !buzzerState;
+            ctx.fillStyle = buzzerState ? 'yellow' : 'blue'; ctx.fillRect(380,80,40,40);
+            ctx.fillStyle='black'; ctx.fillText('Buzzer', 370,140);
+        }
+
+    }, 1000);
+}
+
+document.getElementById('downloadVideo').addEventListener('click', () => {
+    alert('Video generation demo - future update me live video download available hoga.');
+});
+</script>
+
+</body>
+</html>
+
